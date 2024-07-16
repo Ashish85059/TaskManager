@@ -1,0 +1,42 @@
+<div class="container">
+  <h1>Todo List</h1>
+  <div id="taskTable">
+    <!-- <label for="sort" (change)="onSortChange(($event.target as HTMLSelectElement).value)">Sort By:</label> -->
+    <label for="sort" >Sort By:</label>
+    <select id="sort">
+      <option value="dueDate">Due Date</option>
+      <option value="priority">Priority</option>
+      <option value="status">Status</option>
+    </select>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority Level</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          @for(task of tasks;track task.date){
+            <tr >
+              <td>{{ task.title }}</td>
+              <td>{{ task.description }}</td>
+              <td>{{ task.date}}</td>
+              <td>{{ task.priority }}</td>
+              <!-- <td>
+                <input type="checkbox" [(ngModel)]="task.isCompleted" (change)="toggleCompleted(task)"/> {{ task.isCompleted? "Completed" :"Pending" }}
+              </td> -->
+              <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td>
+              <td>
+                <button class="update">Edit</button>
+                <button class="delete" (click)="deleteTask(task.id)">Delete</button>
+              </td>
+            </tr>
+          }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+ <div class="container">
+    <h1>Task Manager</h1>
+    <div class="content">
+      <div class="form">
+        <h2>Form</h2>
+        <form id="taskForm" [formGroup]="todoForm">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" [formControl]="title"  placeholder="create a task" required>
+          </div>
+          <div class="form-group">
+            <label >Description</label>
+            <textarea [formControl]="description"  placeholder="task description" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label >Due Date</label>
+            <input [formControl]="date" type="date"  required>
+          </div>
+          <div class="form-group">
+            <label for="priority" >Priority</label>
+            <select  id="priority" [formControl]="priority" required>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <button (click)="submit()">Add Task</button>
+        </form>
+      </div>
+    </div>
+    <div class="history">
+      <h2>Log Table - History</h2>
+      <div id="taskHistory">
+        <table>
+          <thead>
+            <tr>
+              <th>Created On</th>
+              <th>Status</th>
+              <th>Edits</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2024-07-15</td>
+              <td>Pending</td>
+              <td>T1 -> T2</td>
+            </tr>
+            <tr>
+              <td>2024-07-16</td>
+              <td>Completed</td>
+              <td>T3 -> T4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
