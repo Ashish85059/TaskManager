@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { saveAs } from 'file-saver';
-
-
-// Generate a unique ID
-
 import { TodoList } from '../../../models/TodoListModel';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './tasks.component.html',
-  styleUrl: './tasks.component.css',
+  styleUrls: ['./tasks.component.css'],
 })
 export class TasksComponent implements OnInit {
   tasks: TodoList[] = [];
@@ -21,20 +17,13 @@ export class TasksComponent implements OnInit {
   showModal: boolean = false;
 
   ngOnInit(): void {
-    const storedTasks = localStorage.getItem('taskList');
-    if (storedTasks) {
-      this.tasks = JSON.parse(storedTasks);
-    }
+    this.fetchTasks();
     this.sortByDueDate();
   }
 
-  setToLocalStorage() {
-    localStorage.setItem('taskList', JSON.stringify(this.tasks));
-  }
-
   deleteTask(taskId: string) {
-    this.tasks = this.tasks.filter((task) => task.id !== taskId);
-    this.setToLocalStorage();
+    this.tasks = this.tasks.filter((task) => task._id !== taskId);
+    this.deleteTaskMongo(taskId);
   }
 
   sortByDueDate(): void {
@@ -42,15 +31,6 @@ export class TasksComponent implements OnInit {
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
   }
-
-  // sortByPriority(): void {
-  //   const priorityOrder = { low: 1, medium: 2, high: 3 };
-
-  //   this.tasks.sort(
-  //     (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-  //   );
-  //   this.setToLocalStorage();
-  // }
 
   sortByStatus(): void {
     this.tasks.sort((a, b) => {
@@ -64,7 +44,7 @@ export class TasksComponent implements OnInit {
         this.sortByDueDate();
         break;
       case 'priority':
-        // this.sortByPriority();
+        // this.sortByPriority(); // Uncomment if implementing priority sorting
         break;
       case 'status':
         this.sortByStatus();
@@ -77,8 +57,11 @@ export class TasksComponent implements OnInit {
 
   toggleCompleted(task: TodoList): void {
     task.isCompleted = !task.isCompleted;
-    this.logHistory(task,`Marked as ${task.isCompleted ? 'completed' : 'pending'}`);
-    this.setToLocalStorage();
+    this.logHistory(
+      task,
+      `Marked as ${task.isCompleted ? 'completed' : 'pending'}`
+    );
+    this.updateTask(task);
   }
 
   openEditModal(task: TodoList): void {
@@ -93,15 +76,77 @@ export class TasksComponent implements OnInit {
 
   saveTask(): void {
     if (this.selectedTask) {
-      const index = this.tasks.findIndex((t) => t.id === this.selectedTask!.id);
+      const index = this.tasks.findIndex(
+        (t) => t._id === this.selectedTask!._id
+      );
       if (index !== -1) {
         this.tasks[index] = this.selectedTask;
-        // console.log(this.selectedTask.isCompleted);
         this.logHistory(this.tasks[index], 'Task edited');
-        this.setToLocalStorage();
+        this.updateTask(this.selectedTask);
       }
     }
     this.closeEditModal();
+  }
+
+  async updateTask(task: TodoList) {
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/v1/task/${task._id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(task),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Error in network');
+      }
+
+      const result = await response.json();
+      console.log('Updated task:', result);
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  }
+
+  async fetchTasks() {
+    try {
+      const response = await fetch('http://localhost:5100/api/v1/task');
+      const responseData = await response.json();
+
+      if (Array.isArray(responseData.Tasks)) {
+        this.tasks = responseData.Tasks.map((task: any) => ({
+          ...task,
+          history: task.history || [],
+        }));
+      } else {
+        console.error('Expected an array but received:', responseData);
+      }
+    } catch (error) {
+      console.log('Error fetching tasks:', error);
+    }
+  }
+
+  async deleteTaskMongo(taskId: string) {
+    console.log('first');
+    try {
+      const response = await fetch(
+        `http://localhost:5100/api/v1/task/${taskId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      if (!response.ok) {
+        console.log('error');
+        throw new Error('Error in network');
+      }
+      this.fetchTasks();
+    } catch (error) {
+      console.log('Error deleting task:', error);
+    }
   }
 
   logHistory(task: TodoList, action: string) {
@@ -129,7 +174,7 @@ export class TasksComponent implements OnInit {
         task.description,
         task.date,
         task.priority,
-        task.isCompleted ? 'COMPELTED' : 'PENDING',
+        task.isCompleted ? 'COMPLETED' : 'PENDING',
       ];
       csvRows.push(values.join(','));
     }
@@ -139,5 +184,3 @@ export class TasksComponent implements OnInit {
     saveAs(blob, 'tasks.csv');
   }
 }
-
-

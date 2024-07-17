@@ -1,18 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TodoList } from '../../../models/TodoListModel';
 import { v4 as uuidv4 } from 'uuid';
 import { CommonModule } from '@angular/common';
 
@@ -21,17 +13,31 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './task-manager.component.html',
-  styleUrl: './task-manager.component.css',
+  styleUrls: ['./task-manager.component.css'],
 })
 export class TaskManagerComponent implements OnInit, OnChanges {
   tasks: any[] = [];
 
   ngOnInit(): void {
-    const storedTasks = localStorage.getItem('taskList');
-    if (storedTasks) {
-      this.tasks = JSON.parse(storedTasks);
+    this.fetchTasks();
+  }
+
+  async fetchTasks() {
+    try {
+      const response = await fetch('http://localhost:5100/api/v1/task');
+      const data = await response.json();
+
+      // Log the API response to check its format
+      console.log('API response:', data);
+
+      if (data) {
+        this.tasks = data.Tasks;
+      }
+    } catch (error) {
+      console.log('Error fetching tasks:', error);
     }
   }
+
   ngOnChanges(changes: SimpleChanges): void {}
 
   title = new FormControl('', [Validators.required, Validators.minLength(2)]);
@@ -49,7 +55,7 @@ export class TaskManagerComponent implements OnInit, OnChanges {
     priority: this.priority,
   });
 
-  logHistory(task: TodoList, action: string) {
+  logHistory(task: any, action: string) {
     const historyEntry = {
       date: new Date().toLocaleString(),
       action,
@@ -58,11 +64,27 @@ export class TaskManagerComponent implements OnInit, OnChanges {
     console.log(historyEntry);
   }
 
+  async createTask(obj: any) {
+    try {
+      const response = await fetch('http://localhost:5100/api/v1/task', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.log('Error creating task:', error);
+    }
+  }
+
   submit() {
     if (this.todoForm.valid) {
       const uniqueId = uuidv4();
-      let obj: TodoList = {
-        id: uniqueId,
+      let obj = {
         title: this.todoForm.value.title!,
         description: this.todoForm.value.description!,
         date: this.todoForm.value.date!,
@@ -73,9 +95,9 @@ export class TaskManagerComponent implements OnInit, OnChanges {
       this.logHistory(obj, 'Task created');
       this.todoForm.reset();
       this.tasks.push(obj);
+      this.createTask(obj);
       console.log(this.tasks);
       console.log(this.todoForm.value);
-      localStorage.setItem('taskList', JSON.stringify(this.tasks));
       alert('Task is created successfully');
     } else {
       alert('Enter valid data');

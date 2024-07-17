@@ -36,7 +36,7 @@
               <!-- <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td> -->
               <td>
                 <button class="update" (click)="openEditModal(task)">Edit</button>
-                <button class="delete" (click)="deleteTask(task.id)">Delete</button>
+                <button class="delete" (click)="deleteTaskMongo(task._id)">Delete</button>
               </td>
             </tr>
           }
@@ -71,6 +71,7 @@
         <option [ngValue]="false">Pending</option>
       </select>
  
+
       <button type="submit">Save</button>
       <button type="button" (click)="closeEditModal()">Cancel</button>
     </form>
