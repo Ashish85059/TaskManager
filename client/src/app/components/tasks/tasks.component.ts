@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { saveAs } from 'file-saver';
 
 
 // Generate a unique ID
@@ -100,4 +101,28 @@ export class TasksComponent implements OnInit {
     }
     this.closeEditModal();
   }
+
+    exportToCSV(): void {
+    const csvRows = [];
+    const headers = ['Title', 'Description', 'Due Date', 'Priority Level', 'Status'];
+    csvRows.push(headers.join(','));
+
+    for (const task of this.tasks) {
+      const values = [
+        task.title,
+        task.description,
+        task.date,
+        task.priority,
+        task.isCompleted ? 'COMPELTED' : 'PENDING'
+      ];
+      csvRows.push(values.join(','));
+    }
+
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    // const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'tasks.csv');
+  }
 }
+
+

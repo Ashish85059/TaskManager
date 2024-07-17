@@ -2,12 +2,16 @@
   <h1>Todo List</h1>
   <div id="taskTable">
     <!-- <label for="sort" (change)="onSortChange(($event.target as HTMLSelectElement).value)">Sort By:</label> -->
-    <label for="sort">Sort By:</label>
-    <select id="sort">
-      <option value="dueDate">Due Date</option>
-      <option value="priority">Priority</option>
-      <option value="status">Status</option>
-    </select>
+    <div class="ndiv">
+
+      <label for="sort">Sort By:</label>
+      <select id="sort">
+        <option value="dueDate">Due Date</option>
+        <option value="priority">Priority</option>
+        <option value="status">Status</option>
+      </select>
+      <button (click)="exportToCSV()" class="export-btn">Export to CSV</button>
+    </div>
     <table>
       <thead>
         <tr>
