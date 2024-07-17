@@ -29,29 +29,28 @@
       </div>
     </div>
     <div class="history">
-      <h2>Log Table - History</h2>
-      <div id="taskHistory">
-        <table>
-          <thead>
-            <tr>
-              <th>Created On</th>
-              <th>Status</th>
-              <th>Edits</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>2024-07-15</td>
-              <td>Pending</td>
-              <td>T1 -> T2</td>
-            </tr>
-            <tr>
-              <td>2024-07-16</td>
-              <td>Completed</td>
-              <td>T3 -> T4</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <h2>Log Table - History</h2>
+    <div id="taskHistory">
+      <table>
+        <thead>
+          <tr>
+            <th>Task Title</th>
+            <th>History</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of tasks">
+            <td>{{ task.title }}</td>
+            <td>
+              <ul>
+                <li *ngFor="let entry of task.history">
+                  {{ entry.date }} - {{ entry.action }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
   </div>

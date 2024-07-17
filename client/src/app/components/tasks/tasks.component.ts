@@ -77,6 +77,7 @@ export class TasksComponent implements OnInit {
 
   toggleCompleted(task: TodoList): void {
     task.isCompleted = !task.isCompleted;
+    this.logHistory(task,`Marked as ${task.isCompleted ? 'completed' : 'pending'}`);
     this.setToLocalStorage();
   }
 
@@ -95,16 +96,31 @@ export class TasksComponent implements OnInit {
       const index = this.tasks.findIndex((t) => t.id === this.selectedTask!.id);
       if (index !== -1) {
         this.tasks[index] = this.selectedTask;
-        console.log(this.selectedTask.isCompleted)
+        // console.log(this.selectedTask.isCompleted);
+        this.logHistory(this.tasks[index], 'Task edited');
         this.setToLocalStorage();
       }
     }
     this.closeEditModal();
   }
 
-    exportToCSV(): void {
+  logHistory(task: TodoList, action: string) {
+    const historyEntry = {
+      date: new Date().toISOString(),
+      action,
+    };
+    task.history.push(historyEntry);
+  }
+
+  exportToCSV(): void {
     const csvRows = [];
-    const headers = ['Title', 'Description', 'Due Date', 'Priority Level', 'Status'];
+    const headers = [
+      'Title',
+      'Description',
+      'Due Date',
+      'Priority Level',
+      'Status',
+    ];
     csvRows.push(headers.join(','));
 
     for (const task of this.tasks) {
@@ -113,14 +129,13 @@ export class TasksComponent implements OnInit {
         task.description,
         task.date,
         task.priority,
-        task.isCompleted ? 'COMPELTED' : 'PENDING'
+        task.isCompleted ? 'COMPELTED' : 'PENDING',
       ];
       csvRows.push(values.join(','));
     }
 
     const csvString = csvRows.join('\n');
     const blob = new Blob([csvString], { type: 'text/csv' });
-    // const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'tasks.csv');
   }
 }
