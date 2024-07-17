@@ -10,12 +10,14 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css',
 })
 export class TasksComponent implements OnInit {
   tasks: TodoList[] = [];
+  selectedTask: TodoList | null = null;
+  showModal: boolean = false;
 
   ngOnInit(): void {
     const storedTasks = localStorage.getItem('taskList');
@@ -75,5 +77,27 @@ export class TasksComponent implements OnInit {
   toggleCompleted(task: TodoList): void {
     task.isCompleted = !task.isCompleted;
     this.setToLocalStorage();
+  }
+
+  openEditModal(task: TodoList): void {
+    this.selectedTask = { ...task };
+    this.showModal = true;
+  }
+
+  closeEditModal(): void {
+    this.selectedTask = null;
+    this.showModal = false;
+  }
+
+  saveTask(): void {
+    if (this.selectedTask) {
+      const index = this.tasks.findIndex((t) => t.id === this.selectedTask!.id);
+      if (index !== -1) {
+        this.tasks[index] = this.selectedTask;
+        console.log(this.selectedTask.isCompleted)
+        this.setToLocalStorage();
+      }
+    }
+    this.closeEditModal();
   }
 }

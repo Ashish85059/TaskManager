@@ -2,7 +2,7 @@
   <h1>Todo List</h1>
   <div id="taskTable">
     <!-- <label for="sort" (change)="onSortChange(($event.target as HTMLSelectElement).value)">Sort By:</label> -->
-    <label for="sort" >Sort By:</label>
+    <label for="sort">Sort By:</label>
     <select id="sort">
       <option value="dueDate">Due Date</option>
       <option value="priority">Priority</option>
@@ -31,12 +31,44 @@
               </td>
               <!-- <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td> -->
               <td>
-                <button class="update">Edit</button>
+                <button class="update" (click)="openEditModal(task)">Edit</button>
                 <button class="delete" (click)="deleteTask(task.id)">Delete</button>
               </td>
             </tr>
           }
       </tbody>
     </table>
+  </div>
+</div>
+
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <h2>Edit Task</h2>
+    <form (ngSubmit)="saveTask()">
+      <label for="title">Title</label>
+      <input type="text" id="title" [(ngModel)]="selectedTask!.title" name="title" required />
+
+      <label for="description">Description</label>
+      <textarea id="description" [(ngModel)]="selectedTask!.description" name="description" required></textarea>
+
+      <label for="date">Due Date</label>
+      <input type="date" id="date" [(ngModel)]="selectedTask!.date" name="date" required />
+
+      <label for="priority">Priority</label>
+      <select id="priority" [(ngModel)]="selectedTask!.priority" name="priority" required>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
+      <label for="status">Status</label>
+      <select id="status" [(ngModel)]="selectedTask!.isCompleted" name="status" required>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+      </select>
+
+      <button type="submit">Save</button>
+      <button type="button" (click)="closeEditModal()">Cancel</button>
+    </form>
   </div>
 </div>
