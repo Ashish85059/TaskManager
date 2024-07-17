@@ -106,7 +106,7 @@ export class TasksComponent implements OnInit {
 
   logHistory(task: TodoList, action: string) {
     const historyEntry = {
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
       action,
     };
     task.history.push(historyEntry);

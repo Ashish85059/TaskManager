@@ -1,5 +1,17 @@
-import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { TodoList } from '../../../models/TodoListModel';
 import { v4 as uuidv4 } from 'uuid';
 import { CommonModule } from '@angular/common';
@@ -7,7 +19,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-task-manager',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './task-manager.component.html',
   styleUrl: './task-manager.component.css',
 })
@@ -37,19 +49,19 @@ export class TaskManagerComponent implements OnInit, OnChanges {
     priority: this.priority,
   });
 
-  logHistory(task:TodoList , action: string) {
+  logHistory(task: TodoList, action: string) {
     const historyEntry = {
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
       action,
     };
     task.history.push(historyEntry);
-    console.log(historyEntry)
+    console.log(historyEntry);
   }
 
   submit() {
     if (this.todoForm.valid) {
       const uniqueId = uuidv4();
-      let obj:TodoList ={
+      let obj: TodoList = {
         id: uniqueId,
         title: this.todoForm.value.title!,
         description: this.todoForm.value.description!,
@@ -66,7 +78,7 @@ export class TaskManagerComponent implements OnInit, OnChanges {
       localStorage.setItem('taskList', JSON.stringify(this.tasks));
       alert('Task is created successfully');
     } else {
-      alert("Enter valid data")
+      alert('Enter valid data');
       console.log('Invalid form');
     }
   }
