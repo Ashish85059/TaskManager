@@ -154,5 +154,9 @@ button.delete:hover {
   font-size: 14px;
   width: 100px;
   padding: 2px;
-  margin-right: 0px;
+  margin-left: 10px;
+}
+
+.statusRow{
+  width:150px;
 }

@@ -30,7 +30,7 @@
               <td>{{ task.description }}</td>
               <td>{{ task.date}}</td>
               <td>{{ task.priority }}</td>
-              <td>
+              <td class="statusRow">
                 <input type="checkbox" [checked]="task.isCompleted" (change)="toggleCompleted(task)"/> {{ task.isCompleted? "Completed" :"Pending" }}
               </td>
               <!-- <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td> -->
@@ -67,9 +67,10 @@
 
       <label for="status">Status</label>
       <select id="status" [(ngModel)]="selectedTask!.isCompleted" name="status" required>
-        <option value="completed">Completed</option>
-        <option value="pending">Pending</option>
+        <option [ngValue]="true">Completed</option>
+        <option [ngValue]="false">Pending</option>
       </select>
+ 
 
       <button type="submit">Save</button>
       <button type="button" (click)="closeEditModal()">Cancel</button>
