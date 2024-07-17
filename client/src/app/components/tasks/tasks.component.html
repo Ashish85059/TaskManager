@@ -26,10 +26,10 @@
               <td>{{ task.description }}</td>
               <td>{{ task.date}}</td>
               <td>{{ task.priority }}</td>
-              <!-- <td>
-                <input type="checkbox" [(ngModel)]="task.isCompleted" (change)="toggleCompleted(task)"/> {{ task.isCompleted? "Completed" :"Pending" }}
-              </td> -->
-              <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td>
+              <td>
+                <input type="checkbox" [checked]="task.isCompleted" (change)="toggleCompleted(task)"/> {{ task.isCompleted? "Completed" :"Pending" }}
+              </td>
+              <!-- <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td> -->
               <td>
                 <button class="update">Edit</button>
                 <button class="delete" (click)="deleteTask(task.id)">Delete</button>
