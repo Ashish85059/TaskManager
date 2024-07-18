@@ -3,6 +3,6 @@ import { TaskManagerComponent } from './components/task-manager/task-manager.com
 import { TasksComponent } from './components/tasks/tasks.component';
 
 export const routes: Routes = [
-    {path:"",component:TaskManagerComponent},
-    {path:"allTasks",component:TasksComponent}
+    {path:"addTask",component:TaskManagerComponent},
+    {path:"",component:TasksComponent}
 ];
