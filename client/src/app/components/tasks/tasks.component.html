@@ -1,79 +1,73 @@
-<div class="container">
-  <h1>Todo List</h1>
-  <div id="taskTable">
-    <!-- <label for="sort" (change)="onSortChange(($event.target as HTMLSelectElement).value)">Sort By:</label> -->
-    <div class="ndiv">
-
-      <label for="sort">Sort By:</label>
-      <select id="sort">
-        <option value="dueDate">Due Date</option>
-        <option value="priority">Priority</option>
-        <option value="status">Status</option>
-      </select>
-      <button (click)="exportToCSV()" class="export-btn">Export to CSV</button>
+  <div class="container">
+    <h1>Todo List</h1>
+    <div id="taskTable">
+      <div class="ndiv">
+        <label for="sort">Sort By:</label>
+        <select id="sort" (change)="onSortChange($event)">
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+          <option value="status">Status</option>
+        </select>
+        <button (click)="exportToCSV()" class="export-btn">Export to CSV</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority Level</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of tasks; trackBy: trackByTaskId">
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.date }}</td>
+            <td>{{ task.priority }}</td>
+            <td class="statusRow">
+              <input type="checkbox" [checked]="task.isCompleted" (change)="toggleCompleted(task)" /> {{ task.isCompleted ? 'Completed' : 'Pending' }}
+            </td>
+            <td>
+              <button class="update" (click)="openEditModal(task)">Edit</button>
+              <button class="delete" (click)="deleteTask(task._id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority Level</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-          @for(task of tasks;track task.date){
-            <tr >
-              <td>{{ task.title }}</td>
-              <td>{{ task.description }}</td>
-              <td>{{ task.date}}</td>
-              <td>{{ task.priority }}</td>
-              <td class="statusRow">
-                <input type="checkbox" [checked]="task.isCompleted" (change)="toggleCompleted(task)"/> {{ task.isCompleted? "Completed" :"Pending" }}
-              </td>
-              <!-- <td>{{ task.isCompleted ? "Completed" :"Pending" }}</td> -->
-              <td>
-                <button class="update" (click)="openEditModal(task)">Edit</button>
-                <button class="delete" (click)="deleteTaskMongo(task._id)">Delete</button>
-              </td>
-            </tr>
-          }
-      </tbody>
-    </table>
   </div>
-</div>
 
-<div class="modal" *ngIf="showModal">
-  <div class="modal-content">
-    <h2>Edit Task</h2>
-    <form (ngSubmit)="saveTask()">
-      <label for="title">Title</label>
-      <input type="text" id="title" [(ngModel)]="selectedTask!.title" name="title" required />
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h2>Edit Task</h2>
+      <form (ngSubmit)="saveTask()">
+        <label for="title">Title</label>
+        <input type="text" id="title" [(ngModel)]="selectedTask!.title" name="title" required />
 
-      <label for="description">Description</label>
-      <textarea id="description" [(ngModel)]="selectedTask!.description" name="description" required></textarea>
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="selectedTask!.description" name="description" required></textarea>
 
-      <label for="date">Due Date</label>
-      <input type="date" id="date" [(ngModel)]="selectedTask!.date" name="date" required />
+        <label for="date">Due Date</label>
+        <input type="date" id="date" [(ngModel)]="selectedTask!.date" name="date" required />
 
-      <label for="priority">Priority</label>
-      <select id="priority" [(ngModel)]="selectedTask!.priority" name="priority" required>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
+        <label for="priority">Priority</label>
+        <select id="priority" [(ngModel)]="selectedTask!.priority" name="priority" required>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
 
-      <label for="status">Status</label>
-      <select id="status" [(ngModel)]="selectedTask!.isCompleted" name="status" required>
-        <option [ngValue]="true">Completed</option>
-        <option [ngValue]="false">Pending</option>
-      </select>
- 
+        <label for="status">Status</label>
+        <select id="status" [(ngModel)]="selectedTask!.isCompleted" name="status" required>
+          <option [ngValue]="true">Completed</option>
+          <option [ngValue]="false">Pending</option>
+        </select>
 
-      <button type="submit">Save</button>
-      <button type="button" (click)="closeEditModal()">Cancel</button>
-    </form>
+        <button type="submit">Save</button>
+        <button type="button" (click)="closeEditModal()">Cancel</button>
+      </form>
+    </div>
   </div>
-</div>

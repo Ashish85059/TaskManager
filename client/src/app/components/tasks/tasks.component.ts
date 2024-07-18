@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
 })
+
 export class TasksComponent implements OnInit {
   tasks: TodoList[] = [];
   selectedTask: TodoList | null = null;
@@ -38,13 +39,23 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  onSortChange(sortBy: string): void {
+  sortByPriority(): void {
+    const priorityOrder = ['low', 'medium', 'high'];
+    this.tasks.sort((a, b) => {
+      return (
+        priorityOrder.indexOf(b.priority) - priorityOrder.indexOf(a.priority)
+      );
+    });
+  }
+
+  onSortChange(event: Event): void {
+    const sortBy = (event.target as HTMLSelectElement).value;
     switch (sortBy) {
       case 'dueDate':
         this.sortByDueDate();
         break;
       case 'priority':
-        // this.sortByPriority(); // Uncomment if implementing priority sorting
+        this.sortByPriority();
         break;
       case 'status':
         this.sortByStatus();
@@ -117,8 +128,8 @@ export class TasksComponent implements OnInit {
       const response = await fetch('http://localhost:5100/api/v1/task');
       const responseData = await response.json();
 
-      if(responseData){
-        this.tasks=responseData.Tasks;
+      if (responseData.Tasks) {
+        this.tasks = responseData.Tasks;
       }
     } catch (error) {
       console.log('Error fetching tasks:', error);
@@ -126,7 +137,6 @@ export class TasksComponent implements OnInit {
   }
 
   async deleteTaskMongo(taskId: string) {
-    console.log('first');
     try {
       const response = await fetch(
         `http://localhost:5100/api/v1/task/${taskId}`,
@@ -135,7 +145,6 @@ export class TasksComponent implements OnInit {
         }
       );
       if (!response.ok) {
-        console.log('error');
         throw new Error('Error in network');
       }
       this.fetchTasks();
@@ -177,5 +186,9 @@ export class TasksComponent implements OnInit {
     const csvString = csvRows.join('\n');
     const blob = new Blob([csvString], { type: 'text/csv' });
     saveAs(blob, 'tasks.csv');
+  }
+
+  trackByTaskId(index: number, task: TodoList): string {
+    return task._id;
   }
 }
