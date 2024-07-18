@@ -102,7 +102,7 @@ export class TasksComponent implements OnInit {
   async updateTask(task: TodoList) {
     try {
       const response = await fetch(
-        `http://localhost:5100/api/v1/task/${task._id}`,
+        `https://taskmanager-backend-1zsu.onrender.com/api/v1/task/${task._id}`,
         {
           method: 'PATCH',
           headers: {
@@ -125,7 +125,9 @@ export class TasksComponent implements OnInit {
 
   async fetchTasks() {
     try {
-      const response = await fetch('http://localhost:5100/api/v1/task');
+      const response = await fetch(
+        'https://taskmanager-backend-1zsu.onrender.com/api/v1/task'
+      );
       const responseData = await response.json();
 
       if (responseData.Tasks) {
@@ -139,7 +141,7 @@ export class TasksComponent implements OnInit {
   async deleteTaskMongo(taskId: string) {
     try {
       const response = await fetch(
-        `http://localhost:5100/api/v1/task/${taskId}`,
+        `https://taskmanager-backend-1zsu.onrender.com/api/v1/task/${taskId}`,
         {
           method: 'DELETE',
         }

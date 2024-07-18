@@ -24,7 +24,9 @@ export class TaskManagerComponent implements OnInit, OnChanges {
 
   async fetchTasks() {
     try {
-      const response = await fetch('http://localhost:5100/api/v1/task');
+      const response = await fetch(
+        'https://taskmanager-backend-1zsu.onrender.com/api/v1/task'
+      );
       const data = await response.json();
 
       // Log the API response to check its format
@@ -66,13 +68,16 @@ export class TaskManagerComponent implements OnInit, OnChanges {
 
   async createTask(obj: any) {
     try {
-      const response = await fetch('http://localhost:5100/api/v1/task', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(obj),
-      });
+      const response = await fetch(
+        'https://taskmanager-backend-1zsu.onrender.com/api/v1/task',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(obj),
+        }
+      );
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
