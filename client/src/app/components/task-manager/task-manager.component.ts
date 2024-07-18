@@ -25,7 +25,7 @@ export class TaskManagerComponent implements OnInit, OnChanges {
   async fetchTasks() {
     try {
       const response = await fetch(
-        'https://taskmanager-backend-1zsu.onrender.com/api/v1/task'
+        'https://taskmanager-0hmr.onrender.com/api/v1/task'
       );
       const data = await response.json();
 
@@ -69,7 +69,7 @@ export class TaskManagerComponent implements OnInit, OnChanges {
   async createTask(obj: any) {
     try {
       const response = await fetch(
-        'https://taskmanager-backend-1zsu.onrender.com/api/v1/task',
+        'https://taskmanager-0hmr.onrender.com/api/v1/task',
         {
           method: 'POST',
           headers: {
