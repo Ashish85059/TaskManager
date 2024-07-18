@@ -119,8 +119,7 @@ tbody tr:nth-child(even) {
 @media (max-width: 480px) {
   h1 {
     font-size: 24px;
-  }
-
+  } 
   button, input[type="text"], textarea, input[type="date"], select, th, td {
     font-size: 12px;
   }
