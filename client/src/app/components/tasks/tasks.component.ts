@@ -117,13 +117,8 @@ export class TasksComponent implements OnInit {
       const response = await fetch('http://localhost:5100/api/v1/task');
       const responseData = await response.json();
 
-      if (Array.isArray(responseData.Tasks)) {
-        this.tasks = responseData.Tasks.map((task: any) => ({
-          ...task,
-          history: task.history || [],
-        }));
-      } else {
-        console.error('Expected an array but received:', responseData);
+      if(responseData){
+        this.tasks=responseData.Tasks;
       }
     } catch (error) {
       console.log('Error fetching tasks:', error);
